@@ -37,10 +37,23 @@ h3 {
 
 .game-info {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
+    justify-content: center;
+    gap: 40px;
+    margin: 20px 0;
     font-size: 1.2rem;
     font-weight: bold;
+    background-color: #f8f9fa;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.game-info .score {
+    color: #27ae60;
+}
+
+.game-info .round {
+    color: #2980b9;
 }
 
 .crisis-event {
@@ -48,7 +61,7 @@ h3 {
     color: white;
     padding: 15px;
     border-radius: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 0;
     text-align: center;
 }
 
