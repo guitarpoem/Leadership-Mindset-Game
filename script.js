@@ -24,7 +24,7 @@ const traits = [
     {
         name: "Emotional Intelligence",
         icon: "❤️",
-        description: "Understanding and managing emotions",
+        description: "Understanding emotions",
         class: "ei",
         qualities: ["Awareness", "Empower"]
     },
@@ -756,9 +756,128 @@ function replaceTrait() {
     }
 }
 
-// End the game
+function calculateMindsetDistribution(traits) {
+    const distribution = {
+        Awareness: 0,
+        Behaviour: 0,
+        Choice: 0,
+        Engage: 0,
+        Empower: 0,
+        Enable: 0
+    };
+    
+    // Calculate the score for each quality
+    traits.forEach(trait => {
+        trait.qualities.forEach(quality => {
+            distribution[quality]++;
+        });
+    });
+    
+    // Normalize scores (convert to percentages)
+    const maxPossibleScores = {
+        Awareness: 1, // Emotional Intelligence
+        Behaviour: 2, // Adaptability, Resilience
+        Choice: 3,    // Ethical Integrity, Strategic Thinking, Decisiveness
+        Engage: 2,    // Collaboration, Communication
+        Empower: 2,   // Transparency, Emotional Intelligence
+        Enable: 2     // Conflict Resolution, Resilience
+    };
+    
+    Object.keys(distribution).forEach(quality => {
+        distribution[quality] = (distribution[quality] / maxPossibleScores[quality]) * 100;
+    });
+    
+    return distribution;
+}
+
+function generateMindsetDescription(distribution) {
+    const strengths = [];
+    const areasForDevelopment = [];
+    
+    Object.entries(distribution).forEach(([quality, score]) => {
+        if (score >= 50) {
+            strengths.push(quality);
+        } else {
+            areasForDevelopment.push(quality);
+        }
+    });
+    
+    let description = `<strong>Your Leadership Strengths:</strong><br>`;
+    description += strengths.length > 0 
+        ? `Your mindset shows strong alignment with ${strengths.join(', ')}. `
+        : `You're still developing your core leadership qualities. `;
+    
+    description += `<br><br><strong>Development Opportunities:</strong><br>`;
+    description += areasForDevelopment.length > 0
+        ? `Consider developing your ${areasForDevelopment.join(', ')} qualities to become a more well-rounded leader. `
+        : `You have a well-balanced leadership mindset across all qualities. `;
+    
+    return description;
+}
+
+function createRadarChart(distribution) {
+    const ctx = document.getElementById('mindsetRadar').getContext('2d');
+    
+    // Destroy existing chart if it exists
+    if (window.mindsetChart) {
+        window.mindsetChart.destroy();
+    }
+    
+    window.mindsetChart = new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: Object.keys(distribution),
+            datasets: [{
+                label: 'Your Leadership Mindset',
+                data: Object.values(distribution),
+                backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                borderColor: 'rgba(52, 152, 219, 1)',
+                pointBackgroundColor: 'rgba(52, 152, 219, 1)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(52, 152, 219, 1)'
+            }]
+        },
+        options: {
+            scales: {
+                r: {
+                    angleLines: {
+                        color: 'rgba(0, 0, 0, 0.1)'
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)'
+                    },
+                    pointLabels: {
+                        font: {
+                            size: 14,
+                            weight: 'bold'
+                        }
+                    },
+                    suggestedMin: 0,
+                    suggestedMax: 100
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+}
+
 function endGame() {
     finalScoreElement.textContent = score;
+    
+    // Calculate mindset distribution
+    const distribution = calculateMindsetDistribution(playerTraits);
+    
+    // Create radar chart
+    createRadarChart(distribution);
+    
+    // Generate and display mindset description
+    const mindsetDescription = generateMindsetDescription(distribution);
+    document.getElementById('mindset-description').innerHTML = mindsetDescription;
     
     // Determine final message based on score
     let message;

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Build Your Leadership Mindset</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
@@ -75,6 +76,13 @@
             <h2>Game Over!</h2>
             <p>Final Score: <span id="final-score">0</span></p>
             <p id="final-message"></p>
+            <div class="mindset-analysis">
+                <h3>Your Leadership Mindset Analysis</h3>
+                <div class="radar-container">
+                    <canvas id="mindsetRadar"></canvas>
+                </div>
+                <p id="mindset-description"></p>
+            </div>
             <button id="play-again-btn" class="btn">Play Again</button>
         </div>
     </div>
