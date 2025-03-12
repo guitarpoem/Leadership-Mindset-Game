@@ -38,7 +38,7 @@ const traits = [
     {
         name: "Strategic Thinking",
         icon: "🧠",
-        description: "Long-term planning and vision",
+        description: "Long-term planning & vision",
         class: "strategic",
         qualities: ["Choice"]
     },
@@ -906,6 +906,16 @@ function generateMindsetDescription(distribution) {
 function createRadarChart(distribution) {
     const ctx = document.getElementById('mindsetRadar').getContext('2d');
     
+    // Define quality symbols
+    const qualitySymbols = {
+        'Awareness': '👁️ Awareness',    // Eye for self-awareness
+        'Behaviour': '🔄 Behaviour',     // Cycle for adaptable behavior
+        'Choice': '⚡ Choice',           // Lightning for decisive choices
+        'Engage': '🤝 Engage',          // Handshake for engagement
+        'Empower': '⭐ Empower',        // Star for empowerment
+        'Enable': '🔑 Enable'           // Key for enabling others
+    };
+    
     // Destroy existing chart if it exists
     if (window.mindsetChart) {
         window.mindsetChart.destroy();
@@ -914,7 +924,7 @@ function createRadarChart(distribution) {
     window.mindsetChart = new Chart(ctx, {
         type: 'radar',
         data: {
-            labels: Object.keys(distribution),
+            labels: Object.keys(distribution).map(key => qualitySymbols[key]),
             datasets: [{
                 label: 'Your Leadership Mindset',
                 data: Object.values(distribution),
@@ -937,17 +947,31 @@ function createRadarChart(distribution) {
                     },
                     pointLabels: {
                         font: {
-                            size: 14,
+                            size: 16,
                             weight: 'bold'
-                        }
+                        },
+                        padding: 20
                     },
                     suggestedMin: 0,
-                    suggestedMax: 100
+                    suggestedMax: 100,
+                    ticks: {
+                        stepSize: 20,
+                        font: {
+                            size: 12
+                        }
+                    }
                 }
             },
             plugins: {
                 legend: {
                     display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.parsed.r.toFixed(1)}%`;
+                        }
+                    }
                 }
             }
         }
@@ -991,4 +1015,35 @@ playAgainBtn.addEventListener('click', initGame);
 confirmTraitsBtn.addEventListener('click', startGameWithSelectedTraits);
 
 // Initialize the game when the page loads
-window.addEventListener('DOMContentLoaded', initGame); 
+window.addEventListener('DOMContentLoaded', initGame);
+
+// Get new trait options for replacement
+function getNewTraitOptions() {
+    // Get the required traits for the current crisis
+    const crisisTraits = [];
+    
+    // Find the trait objects for each required trait in the current crisis
+    currentCrisis.requiredTraits.forEach(traitName => {
+        const trait = traits.find(t => t.name === traitName);
+        if (trait && !playerTraits.some(playerTrait => playerTrait.name === trait.name)) {
+            crisisTraits.push(trait);
+        }
+    });
+    
+    // If the player already has some of the required traits, fill in with other traits
+    if (crisisTraits.length < 3) {
+        const otherTraits = traits.filter(trait => 
+            !playerTraits.some(playerTrait => playerTrait.name === trait.name) && 
+            !crisisTraits.some(crisisTrait => crisisTrait.name === trait.name)
+        );
+        
+        // Randomly select additional traits to make up 3 options
+        while (crisisTraits.length < 3 && otherTraits.length > 0) {
+            const randomIndex = Math.floor(Math.random() * otherTraits.length);
+            crisisTraits.push(otherTraits[randomIndex]);
+            otherTraits.splice(randomIndex, 1);
+        }
+    }
+    
+    return crisisTraits;
+} 
