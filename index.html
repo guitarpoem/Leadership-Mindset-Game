@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build Your Leadership Mindset</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Build Your Leadership Mindset through Life Challenges</h1>
+        
+        <div id="game-intro" class="game-intro">
+            <p>Welcome to your leadership journey! This simulation allows you to experience a leader's life path through 10 real-world challenges that will test and develop your leadership mindset.</p>
+            <p>As you navigate each crisis, you'll learn which leadership traits are most effective in different situations. After each challenge, you'll have the opportunity to reflect and update your mindset based on what you've learned.</p>
+            <p>Through this trial-and-error process, you'll discover which leadership traits you truly value and want to develop throughout your career.</p>
+            <p>Begin by selecting the 5 leadership traits that currently define your mindset, then put them to the test!</p>
+        </div>
+        
+        <div id="game-rules" class="game-rules">
+            <h3>How to Play:</h3>
+            <ol>
+                <li>Select 5 leadership traits to form your initial mindset</li>
+                <li>Face 10 different crisis scenarios in sequence</li>
+                <li>For each crisis, you'll see which 3 leadership traits would be most effective</li>
+                <li>Score points based on how many of your traits match the required ones:
+                    <ul>
+                        <li class="score-perfect">3 matches = 100 points (Perfect response)</li>
+                        <li class="score-good">2 matches = 50 points (Good response)</li>
+                        <li class="score-limited">0-1 matches = 0 points (Limited response)</li>
+                    </ul>
+                </li>
+                <li>After each crisis, you can choose to replace one trait to adapt your mindset or continue with your current traits</li>
+                <li>Your final score reflects how effectively you navigated the challenges</li>
+            </ol>
+        </div>
+        
+        <div class="game-info">
+            <div class="score">Score: <span id="score">0</span></div>
+            <div class="round">Round: <span id="round">1</span>/10</div>
+        </div>
+        
+        <div id="crisis-event" class="crisis-event">
+            <h2>Current Crisis</h2>
+            <h3 id="crisis-name" class="crisis-name"></h3>
+            <div id="crisis-image" class="crisis-image"></div>
+            <p id="crisis-description">Click "Start Round" to begin facing leadership challenges.</p>
+        </div>
+        
+        <div class="game-area">
+            <div class="section">
+                <h2>Your Leadership Mindset</h2>
+                <div id="player-hand" class="cards-container"></div>
+            </div>
+            
+            <div class="section">
+                <h2>Required Leadership Traits</h2>
+                <div id="shown-cards" class="cards-container"></div>
+            </div>
+        </div>
+        
+        <div id="round-result" class="round-result"></div>
+        
+        <div id="discard-section" class="discard-section hidden">
+            <h3>Select a trait to replace:</h3>
+            <div id="discard-options" class="cards-container"></div>
+            <h3>Choose a new trait:</h3>
+            <div id="new-trait-options" class="cards-container"></div>
+            <button id="discard-btn" class="btn" disabled>Confirm Selection</button>
+        </div>
+        
+        <button id="next-round-btn" class="btn">Start Round</button>
+        
+        <div id="game-over" class="game-over hidden">
+            <h2>Game Over!</h2>
+            <p>Final Score: <span id="final-score">0</span></p>
+            <p id="final-message"></p>
+            <button id="play-again-btn" class="btn">Play Again</button>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html> 
