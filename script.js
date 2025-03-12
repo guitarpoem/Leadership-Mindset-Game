@@ -4,61 +4,71 @@ const traits = [
         name: "Adaptability",
         icon: "🔄",
         description: "Ability to adjust to changing circumstances",
-        class: "adaptability"
+        class: "adaptability",
+        quality: "Behaviour"
     },
     {
         name: "Communication",
         icon: "💬",
         description: "Effective exchange of information and ideas",
-        class: "communication"
+        class: "communication",
+        quality: "Engage"
     },
     {
         name: "Decisiveness",
         icon: "⚡",
         description: "Making timely and effective decisions",
-        class: "decisiveness"
+        class: "decisiveness",
+        quality: "Choice"
     },
     {
         name: "Emotional Intelligence",
         icon: "❤️",
         description: "Understanding and managing emotions",
-        class: "ei"
+        class: "ei",
+        quality: "Awareness"
     },
     {
         name: "Ethical Integrity",
         icon: "⚖️",
         description: "Adherence to moral and ethical principles",
-        class: "ethics"
+        class: "ethics",
+        quality: "Choice"
     },
     {
         name: "Strategic Thinking",
         icon: "🧠",
         description: "Long-term planning and vision",
-        class: "strategic"
+        class: "strategic",
+        quality: "Choice"
     },
     {
         name: "Transparency",
         icon: "👁️",
         description: "Open and honest communication",
-        class: "transparency"
+        class: "transparency",
+        quality: "Empower"
     },
     {
         name: "Resilience",
         icon: "🛡️",
         description: "Ability to recover from setbacks",
-        class: "resilience"
+        class: "resilience",
+        quality: "Behaviour"
     },
     {
         name: "Conflict Resolution",
         icon: "🤝",
         description: "Managing and resolving disagreements",
-        class: "conflict"
+        class: "conflict",
+        quality: "Enable"
     },
     {
         name: "Collaboration",
         icon: "👥",
         description: "Working effectively with others",
-        class: "collaboration"
+        class: "collaboration",
+        quality: "Engage"
     }
 ];
 
@@ -235,10 +245,25 @@ function initGame() {
 function renderInitialTraitOptions() {
     initialTraitOptions.innerHTML = '';
     
+    // Create quality sections
+    const qualityGroups = {
+        'Awareness': [],
+        'Behaviour': [],
+        'Choice': [],
+        'Engage': [],
+        'Empower': [],
+        'Enable': []
+    };
+    
+    // Group traits by quality
     traits.forEach((trait, index) => {
         const traitElement = document.createElement('div');
         traitElement.className = `card ${trait.class}`;
         traitElement.dataset.index = index;
+        
+        const qualityLabel = document.createElement('div');
+        qualityLabel.className = 'quality-label';
+        qualityLabel.textContent = trait.quality;
         
         const iconElement = document.createElement('div');
         iconElement.className = 'trait-icon';
@@ -252,45 +277,46 @@ function renderInitialTraitOptions() {
         descElement.className = 'trait-description';
         descElement.textContent = trait.description;
         
+        traitElement.appendChild(qualityLabel);
         traitElement.appendChild(iconElement);
         traitElement.appendChild(nameElement);
         traitElement.appendChild(descElement);
         
-        // Check if this trait is already selected
-        if (selectedInitialTraits.some(t => t.name === trait.name)) {
-            traitElement.classList.add('selected');
-        }
-        
+        // Add click event listener
         traitElement.addEventListener('click', () => {
-            toggleInitialTraitSelection(trait, traitElement);
+            if (selectedInitialTraits.length < 5 && !traitElement.classList.contains('selected')) {
+                traitElement.classList.add('selected');
+                selectedInitialTraits.push(traits[index]);
+                updateSelectedTraitsDisplay();
+            } else if (traitElement.classList.contains('selected')) {
+                traitElement.classList.remove('selected');
+                selectedInitialTraits = selectedInitialTraits.filter(t => t.name !== traits[index].name);
+                updateSelectedTraitsDisplay();
+            }
         });
         
-        initialTraitOptions.appendChild(traitElement);
+        qualityGroups[trait.quality].push(traitElement);
     });
-}
-
-// Toggle trait selection
-function toggleInitialTraitSelection(trait, traitElement) {
-    const isSelected = traitElement.classList.contains('selected');
     
-    if (isSelected) {
-        // Remove from selection
-        traitElement.classList.remove('selected');
-        selectedInitialTraits = selectedInitialTraits.filter(t => t.name !== trait.name);
-    } else {
-        // Add to selection if less than 5 traits are selected
-        if (selectedInitialTraits.length < 5) {
-            traitElement.classList.add('selected');
-            selectedInitialTraits.push(trait);
-        } else {
-            // Alert user they can only select 5 traits
-            alert('You can only select 5 traits. Deselect a trait before selecting a new one.');
-            return;
+    // Add quality sections to the container
+    Object.entries(qualityGroups).forEach(([quality, traitElements]) => {
+        if (traitElements.length > 0) {
+            const qualitySection = document.createElement('div');
+            qualitySection.className = 'quality-section';
+            
+            const qualityTitle = document.createElement('h4');
+            qualityTitle.className = 'quality-title';
+            qualityTitle.textContent = quality;
+            qualitySection.appendChild(qualityTitle);
+            
+            const traitsContainer = document.createElement('div');
+            traitsContainer.className = 'traits-container';
+            traitElements.forEach(element => traitsContainer.appendChild(element));
+            qualitySection.appendChild(traitsContainer);
+            
+            initialTraitOptions.appendChild(qualitySection);
         }
-    }
-    
-    // Update selected traits display
-    updateSelectedTraitsDisplay();
+    });
 }
 
 // Update the display of selected traits
