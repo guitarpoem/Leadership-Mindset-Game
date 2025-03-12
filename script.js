@@ -31,7 +31,7 @@ const traits = [
     {
         name: "Ethical Integrity",
         icon: "⚖️",
-        description: "Adherence to moral and ethical principles",
+        description: "Moral & ethical principles",
         class: "ethics",
         qualities: ["Choice"]
     },
@@ -59,7 +59,7 @@ const traits = [
     {
         name: "Conflict Resolution",
         icon: "🤝",
-        description: "Managing and resolving disagreements",
+        description: "Resolving disagreements",
         class: "conflict",
         qualities: ["Enable"]
     },
