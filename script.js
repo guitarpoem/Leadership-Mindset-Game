@@ -5,70 +5,70 @@ const traits = [
         icon: "🔄",
         description: "Ability to adjust to changing circumstances",
         class: "adaptability",
-        quality: "Behaviour"
+        qualities: ["Behaviour"]
     },
     {
         name: "Communication",
         icon: "💬",
         description: "Effective exchange of information and ideas",
         class: "communication",
-        quality: "Engage"
+        qualities: ["Engage"]
     },
     {
         name: "Decisiveness",
         icon: "⚡",
         description: "Making timely and effective decisions",
         class: "decisiveness",
-        quality: "Choice"
+        qualities: ["Choice"]
     },
     {
         name: "Emotional Intelligence",
         icon: "❤️",
         description: "Understanding and managing emotions",
         class: "ei",
-        quality: "Awareness"
+        qualities: ["Awareness", "Empower"]
     },
     {
         name: "Ethical Integrity",
         icon: "⚖️",
         description: "Adherence to moral and ethical principles",
         class: "ethics",
-        quality: "Choice"
+        qualities: ["Choice"]
     },
     {
         name: "Strategic Thinking",
         icon: "🧠",
         description: "Long-term planning and vision",
         class: "strategic",
-        quality: "Choice"
+        qualities: ["Choice"]
     },
     {
         name: "Transparency",
         icon: "👁️",
         description: "Open and honest communication",
         class: "transparency",
-        quality: "Empower"
+        qualities: ["Empower"]
     },
     {
         name: "Resilience",
         icon: "🛡️",
         description: "Ability to recover from setbacks",
         class: "resilience",
-        quality: "Behaviour"
+        qualities: ["Behaviour", "Enable"]
     },
     {
         name: "Conflict Resolution",
         icon: "🤝",
         description: "Managing and resolving disagreements",
         class: "conflict",
-        quality: "Enable"
+        qualities: ["Enable"]
     },
     {
         name: "Collaboration",
         icon: "👥",
         description: "Working effectively with others",
         class: "collaboration",
-        quality: "Engage"
+        qualities: ["Engage"]
     }
 ];
 
@@ -255,15 +255,23 @@ function renderInitialTraitOptions() {
         'Enable': []
     };
     
-    // Group traits by quality
+    // Group traits by quality - now a trait can appear in multiple groups
     traits.forEach((trait, index) => {
         const traitElement = document.createElement('div');
         traitElement.className = `card ${trait.class}`;
         traitElement.dataset.index = index;
         
-        const qualityLabel = document.createElement('div');
-        qualityLabel.className = 'quality-label';
-        qualityLabel.textContent = trait.quality;
+        // Create quality labels container for multiple qualities
+        const qualityLabelsContainer = document.createElement('div');
+        qualityLabelsContainer.className = 'quality-labels-container';
+        
+        // Add a label for each quality
+        trait.qualities.forEach(quality => {
+            const qualityLabel = document.createElement('div');
+            qualityLabel.className = 'quality-label';
+            qualityLabel.textContent = quality;
+            qualityLabelsContainer.appendChild(qualityLabel);
+        });
         
         const iconElement = document.createElement('div');
         iconElement.className = 'trait-icon';
@@ -277,7 +285,7 @@ function renderInitialTraitOptions() {
         descElement.className = 'trait-description';
         descElement.textContent = trait.description;
         
-        traitElement.appendChild(qualityLabel);
+        traitElement.appendChild(qualityLabelsContainer);
         traitElement.appendChild(iconElement);
         traitElement.appendChild(nameElement);
         traitElement.appendChild(descElement);
@@ -295,7 +303,10 @@ function renderInitialTraitOptions() {
             }
         });
         
-        qualityGroups[trait.quality].push(traitElement);
+        // Add the trait to all its quality groups
+        trait.qualities.forEach(quality => {
+            qualityGroups[quality].push(traitElement.cloneNode(true));
+        });
     });
     
     // Add quality sections to the container
@@ -311,7 +322,23 @@ function renderInitialTraitOptions() {
             
             const traitsContainer = document.createElement('div');
             traitsContainer.className = 'traits-container';
-            traitElements.forEach(element => traitsContainer.appendChild(element));
+            traitElements.forEach(element => {
+                // Add click event listener to the cloned element
+                element.addEventListener('click', () => {
+                    const index = element.dataset.index;
+                    const trait = traits[index];
+                    if (selectedInitialTraits.length < 5 && !element.classList.contains('selected')) {
+                        element.classList.add('selected');
+                        selectedInitialTraits.push(trait);
+                        updateSelectedTraitsDisplay();
+                    } else if (element.classList.contains('selected')) {
+                        element.classList.remove('selected');
+                        selectedInitialTraits = selectedInitialTraits.filter(t => t.name !== trait.name);
+                        updateSelectedTraitsDisplay();
+                    }
+                });
+                traitsContainer.appendChild(element);
+            });
             qualitySection.appendChild(traitsContainer);
             
             initialTraitOptions.appendChild(qualitySection);

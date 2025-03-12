@@ -106,7 +106,7 @@ h3 {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     padding: 10px;
     transition: transform 0.2s, box-shadow 0.2s;
-    padding-top: 25px;
+    padding-top: 35px;
 }
 
 .card:hover {
@@ -492,10 +492,17 @@ h3 {
     justify-content: center;
 }
 
-.quality-label {
+.quality-labels-container {
     position: absolute;
     top: 5px;
     right: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    align-items: flex-end;
+}
+
+.quality-label {
     font-size: 0.7rem;
     background-color: rgba(52, 152, 219, 0.1);
     padding: 2px 6px;
