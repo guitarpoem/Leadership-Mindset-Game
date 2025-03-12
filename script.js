@@ -413,10 +413,10 @@ function updateUI() {
     roundElement.textContent = currentRound;
     
     // Update player traits
-    renderTraits(playerHandElement, playerTraits);
+    renderPlayerHand();
     
     // Update required traits
-    renderTraits(shownCardsElement, requiredTraits);
+    renderRequiredTraits();
 }
 
 // Render traits in a container
@@ -445,6 +445,105 @@ function renderTraits(container, traitsList) {
         traitElement.appendChild(descElement);
         
         container.appendChild(traitElement);
+    });
+}
+
+// Update the renderPlayerHand function to include quality labels
+function renderPlayerHand() {
+    playerHandElement.innerHTML = '';
+    
+    playerTraits.forEach((trait, index) => {
+        const traitElement = document.createElement('div');
+        traitElement.className = `card ${trait.class}`;
+        
+        // Create quality labels container for multiple qualities
+        const qualityLabelsContainer = document.createElement('div');
+        qualityLabelsContainer.className = 'quality-labels-container';
+        
+        // Add a label for each quality
+        trait.qualities.forEach(quality => {
+            const qualityLabel = document.createElement('div');
+            qualityLabel.className = 'quality-label';
+            qualityLabel.textContent = quality;
+            qualityLabelsContainer.appendChild(qualityLabel);
+        });
+        
+        const iconElement = document.createElement('div');
+        iconElement.className = 'trait-icon';
+        iconElement.textContent = trait.icon;
+        
+        const nameElement = document.createElement('div');
+        nameElement.className = 'trait-name';
+        nameElement.textContent = trait.name;
+        
+        const descElement = document.createElement('div');
+        descElement.className = 'trait-description';
+        descElement.textContent = trait.description;
+        
+        traitElement.appendChild(qualityLabelsContainer);
+        traitElement.appendChild(iconElement);
+        traitElement.appendChild(nameElement);
+        traitElement.appendChild(descElement);
+        
+        // Add click event for discard selection
+        traitElement.addEventListener('click', () => {
+            if (discardSection.classList.contains('hidden')) return;
+            
+            // Remove selected class from all cards
+            document.querySelectorAll('#discard-options .card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked card
+            traitElement.classList.add('selected');
+            selectedTraitIndex = index;
+            
+            // Check if both selections are made
+            checkSelections();
+        });
+        
+        playerHandElement.appendChild(traitElement);
+    });
+}
+
+// Update the renderRequiredTraits function to include quality labels
+function renderRequiredTraits() {
+    shownCardsElement.innerHTML = '';
+    
+    requiredTraits.forEach(trait => {
+        const traitElement = document.createElement('div');
+        traitElement.className = `card ${trait.class}`;
+        
+        // Create quality labels container for multiple qualities
+        const qualityLabelsContainer = document.createElement('div');
+        qualityLabelsContainer.className = 'quality-labels-container';
+        
+        // Add a label for each quality
+        trait.qualities.forEach(quality => {
+            const qualityLabel = document.createElement('div');
+            qualityLabel.className = 'quality-label';
+            qualityLabel.textContent = quality;
+            qualityLabelsContainer.appendChild(qualityLabel);
+        });
+        
+        const iconElement = document.createElement('div');
+        iconElement.className = 'trait-icon';
+        iconElement.textContent = trait.icon;
+        
+        const nameElement = document.createElement('div');
+        nameElement.className = 'trait-name';
+        nameElement.textContent = trait.name;
+        
+        const descElement = document.createElement('div');
+        descElement.className = 'trait-description';
+        descElement.textContent = trait.description;
+        
+        traitElement.appendChild(qualityLabelsContainer);
+        traitElement.appendChild(iconElement);
+        traitElement.appendChild(nameElement);
+        traitElement.appendChild(descElement);
+        
+        shownCardsElement.appendChild(traitElement);
     });
 }
 
@@ -640,37 +739,25 @@ function renderDiscardOptions() {
 function renderNewTraitOptions() {
     newTraitOptions.innerHTML = '';
     
-    // Get the required traits for the current crisis
-    const crisisTraits = [];
+    // Get available traits for replacement
+    const crisisTraits = getNewTraitOptions();
     
-    // Find the trait objects for each required trait in the current crisis
-    currentCrisis.requiredTraits.forEach(traitName => {
-        const trait = traits.find(t => t.name === traitName);
-        if (trait && !playerTraits.some(playerTrait => playerTrait.name === trait.name)) {
-            crisisTraits.push(trait);
-        }
-    });
-    
-    // If the player already has some of the required traits, fill in with other traits
-    if (crisisTraits.length < 3) {
-        const otherTraits = traits.filter(trait => 
-            !playerTraits.some(playerTrait => playerTrait.name === trait.name) && 
-            !crisisTraits.some(crisisTrait => crisisTrait.name === trait.name)
-        );
-        
-        // Randomly select additional traits to make up 3 options
-        while (crisisTraits.length < 3 && otherTraits.length > 0) {
-            const randomIndex = Math.floor(Math.random() * otherTraits.length);
-            crisisTraits.push(otherTraits[randomIndex]);
-            otherTraits.splice(randomIndex, 1);
-        }
-    }
-    
-    // Render the trait options
     crisisTraits.forEach((trait, index) => {
         const traitElement = document.createElement('div');
         traitElement.className = `card ${trait.class}`;
         traitElement.dataset.index = index;
+        
+        // Create quality labels container for multiple qualities
+        const qualityLabelsContainer = document.createElement('div');
+        qualityLabelsContainer.className = 'quality-labels-container';
+        
+        // Add a label for each quality
+        trait.qualities.forEach(quality => {
+            const qualityLabel = document.createElement('div');
+            qualityLabel.className = 'quality-label';
+            qualityLabel.textContent = quality;
+            qualityLabelsContainer.appendChild(qualityLabel);
+        });
         
         const iconElement = document.createElement('div');
         iconElement.className = 'trait-icon';
@@ -684,6 +771,7 @@ function renderNewTraitOptions() {
         descElement.className = 'trait-description';
         descElement.textContent = trait.description;
         
+        traitElement.appendChild(qualityLabelsContainer);
         traitElement.appendChild(iconElement);
         traitElement.appendChild(nameElement);
         traitElement.appendChild(descElement);
